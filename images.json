@@ -1,37 +1,48 @@
 [
   {
-    "name": "nombreimagen",
-    "file": "file.Dockerfile",
-    "tag": "tag-{{arg1}}-{{arg2}}-{{DATE}}",
+    "name": "lopoeisr/make-clang",
+    "file": "clang.Dockerfile",
+    "tag": "debian-{{DOCKER_DEBIAN_VERSION}}_CLANG-{{DOCKER_CLANG_VERSION}}_{{DATE}}",
     "args": [
       {
-        "name": "arg1",
-        "value": 4
+        "name": "DOCKER_DEBIAN_VERSION",
+        "value": "bookworm"
       },
       {
-        "name": "arg2",
-        "value": "valor"
+        "name": "DOCKER_CLANG_VERSION",
+        "value": 19
       }
     ]
   },
   {
-    "name": "otraimagen",
-    "file": "otrofile.Dockerfile",
-    "tag": "imagen-{{argX}}-{{argY}}-{{argZ}}-{{DATE}}",
+    "name": "lopoeisr/make-gcc",
+    "file": "gcc.Dockerfile",
+    "tag": "debian-{{DOCKER_DEBIAN_VERSION}}_GCC-{{DOCKER_GCC_VERSION}}_{{DATE}}",
     "args": [
       {
-        "name": "argX",
-        "value": "Xvalue"
+        "name": "DOCKER_DEBIAN_VERSION",
+        "value": "bookworm"
       },
       {
-        "name": "argY",
-        "value": "Yvalue"
-      },
-      {
-        "name": "argZ",
-        "value": "Zvalue"
+        "name": "DOCKER_GCC_VERSION",
+        "value": 14
       }
     ]
-  }
+  },
+  {
+    "name": "lopoeisr/make-doc",
+    "file": "doc.Dockerfile",
+    "tag": "debian-{{DOCKER_DEBIAN_VERSION}}_GCC-{{DOCKER_DOC_VERSION}}_{{DATE}}",
+    "args": [
+      {
+        "name": "DOCKER_DEBIAN_VERSION",
+        "value": "bookworm"
+      },
+      {
+        "name": "DOCKER_DOC_VERSION",
+        "value": 14
+      }
+    ]
+  },
 ]
 
