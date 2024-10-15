@@ -1,0 +1,17 @@
+{
+  "technologies": ["bash", " docker"],
+  "lang": {
+    "en": {
+      "name": "Docker Repository",
+      "desc": "Repository for storing docker images"
+    },
+    "es": {
+      "name": "Repositorio Docker",
+      "desc": "Repositorio para almacenar las imagenes docker"
+    },
+    "zh": {
+      "name": "Docker 存储库",
+      "desc": "存储 docker 镜像的存储库"
+    }
+  }
+}
