@@ -1,0 +1,60 @@
+#!/bin/bash
+
+set -eu
+
+usage() {
+  echo "Usage: $0"
+  echo "    --compiler/-t <compiler [clang/gcc/doc]> --> Required, compiler to use"
+  echo "    --command/-c <command>                   --> Required, command to run"
+  echo "    --follow/-f                              --> Optional, waits for new changes in source files"
+  echo "    --debug/-d                               --> Optional, opens a bash terminal in the container after execution"
+  exit 1
+}
+
+if [ $# -lt 4 ]; then
+  usage
+fi
+
+COMPILER=""
+COMMAND=""
+FOLLOW=false
+DEBUG=false
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --compiler | -t)
+    COMPILER="$2"
+    shift
+    ;;
+  --command | -c)
+    COMMAND="$2"
+    shift
+    ;;
+  --follow | -f)
+    if [ "${DEBUG}" = true ]; then
+      echo "Error: --follow and --debug cannot be used together."
+      exit 1
+    fi
+    FOLLOW=true
+    ;;
+  --debug | -d)
+    if [ "${FOLLOW}" = true ]; then
+      echo "Error: --follow and --debug cannot be used together."
+      exit 1
+    fi
+    DEBUG=true
+    ;;
+  *)
+    usage
+    ;;
+  esac
+  shift
+done
+
+if [ ${FOLLOW} = true ]; then
+  fd ".*\.c" | entr sh -c "clear; docker run --rm --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --name make-clang -v $(pwd):/app lopoeisr/make-${COMPILER}:latest ${COMMAND}"
+elif [ ${DEBUG} = true ]; then
+  docker run --rm -it --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --name make-clang -v "$(pwd)":/app "lopoeisr/make-${COMPILER}:latest" /bin/sh -c "${COMMAND} || /bin/bash"
+else
+  docker run --rm --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --name make-clang -v "$(pwd)":/app "lopoeisr/make-${COMPILER}:latest" /bin/sh -c "${COMMAND}"
+fi
