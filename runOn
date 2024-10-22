@@ -52,9 +52,9 @@ while [ $# -gt 0 ]; do
 done
 
 if [ ${FOLLOW} = true ]; then
-  fd ".*\.c" | entr sh -c "clear; docker run --rm --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --name make-clang -v $(pwd):/app lopoeisr/make-${COMPILER}:latest ${COMMAND}"
+  fd ".*\.c" | entr sh -c "clear; docker run --rm --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --name make-${COMPILER} -v $(pwd):/app lopoeisr/make-${COMPILER}:latest ${COMMAND}"
 elif [ ${DEBUG} = true ]; then
-  docker run --rm -it --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --name make-clang -v "$(pwd)":/app "lopoeisr/make-${COMPILER}:latest" /bin/sh -c "${COMMAND} || /bin/bash"
+  docker run --rm -it --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --name make-${COMPILER} -v "$(pwd)":/app "lopoeisr/make-${COMPILER}:latest" /bin/sh -c "${COMMAND} || /bin/bash"
 else
-  docker run --rm --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --name make-clang -v "$(pwd)":/app "lopoeisr/make-${COMPILER}:latest" /bin/sh -c "${COMMAND}"
+  docker run --rm --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --name make-${COMPILER} -v "$(pwd)":/app "lopoeisr/make-${COMPILER}:latest" /bin/sh -c "${COMMAND}"
 fi
