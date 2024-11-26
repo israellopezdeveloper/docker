@@ -43,6 +43,26 @@
         "value": 14
       }
     ]
+  },
+  {
+    "name": "lopoeisr/rpm-make",
+    "file": "fedora.Dockerfile",
+    "tag": "fedora-{{DOCKER_FEDORA_VERSION}}_{{DATE}}",
+    "args": [
+      {
+        "name": "DOCKER_FEDORA_VERSION",
+        "value": "41"
+      }
+    ]
+  },
+  {
+    "name": "lopoeisr/arch-make",
+    "file": "arch.Dockerfile",
+    "tag": "arch-{{DATE}}",
+    "args": [
+      {
+      }
+    ]
   }
 ]
 

@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     libtool autoconf automake \
     doxygen \
     texlive-full \
+    pkg-config \
     liburing-dev && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*

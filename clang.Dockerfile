@@ -1,35 +1,39 @@
 ARG DOCKER_DEBIAN_VERSION=bookworm
 ARG DOCKER_CLANG_VERSION=19
 
-# Usa la imagen base de Debian más pequeña (slim)
 FROM debian:${DOCKER_DEBIAN_VERSION}-slim
 
 ARG DOCKER_DEBIAN_VERSION
 ARG DOCKER_CLANG_VERSION
 
-# Evitar preguntas interactivas durante la instalación de paquetes
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Actualiza la lista de paquetes y instala dependencias mínimas
 RUN apt-get update && apt-get install -y \
     debian-keyring \
     cmake \
     make \
     git \
+    build-essential \
+    debhelper \
+    dh-make \
+    dpkg-dev \
+    fakeroot \
+    devscripts \
+    lintian \
     wget \
     gnupg \
     libtool autoconf automake \
     liburing-dev \
     ca-certificates \
     lldb \
-    && rm -rf /var/lib/apt/lists/*
+    pkg-config  && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
-# Añado el repositorio de LLVM
 RUN echo "deb http://apt.llvm.org/"${DOCKER_DEBIAN_VERSION}"/ llvm-toolchain-"${DOCKER_DEBIAN_VERSION}"-"${DOCKER_CLANG_VERSION}" main" >> /etc/apt/sources.list && \
     echo "deb-src http://apt.llvm.org/"${DOCKER_DEBIAN_VERSION}"/ llvm-toolchain-"${DOCKER_DEBIAN_VERSION}"-"${DOCKER_CLANG_VERSION}" main" >> /etc/apt/sources.list
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
 
-# Actualiza la lista de paquetes con el nuevo repositorio de LLVM
 RUN apt-get purge --auto-remove -y gcc && \
     apt-get update && apt-get install -y \
     clang-${DOCKER_CLANG_VERSION} \
@@ -47,16 +51,12 @@ RUN apt-get purge --auto-remove -y gcc && \
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 
-# Crear el grupo con GID especificado
 RUN groupadd -g ${GROUP_ID} developer
 
-# Crear el usuario 'developer' con UID y GID especificados
 RUN useradd -m -s /bin/bash -u ${USER_ID} -g developer developer
 
-# Establecer el directorio de trabajo
 WORKDIR /app
 
-# Configurar clang y clang++ como compiladores por defecto usando update-alternatives
 RUN update-alternatives \
   --verbose  \
   --install  /usr/bin/llvm-config              llvm-config             /usr/bin/llvm-config-${DOCKER_CLANG_VERSION}               100 \
@@ -148,17 +148,15 @@ RUN rm /usr/bin/cpp && ln -s /usr/bin/clang++ /usr/bin/cpp && \
     rm /usr/bin/ar && ln -s /usr/bin/llvm-ar /usr/bin/ar && \
     rm /usr/bin/as && ln -s /usr/bin/llvm-as /usr/bin/as
 
-# Verificar la configuración
-# RUN cc --version && c++ --version
+RUN wget https://github.com/israellopezdeveloper/nanologger/releases/download/1.0.2/nanologger-1.0.2.deb && \
+  apt install -y ./nanologger-1.0.2.deb && \
+  rm nanologger-1.0.2.deb
 
-# Cambiar al usuario 'developer'
 USER developer
 
-# Establecer las variables de entorno CC y CXX
 ENV CC=clang
 ENV CXX=clang++
 ENV LD_LIBRARY_PATH=/usr/lib/llvm-${DOCKER_CLANG_VERSION}/lib/clang/${DOCKER_CLANG_VERSION}/lib/linux/:$LD_LIBRARY_PATH
 
 
-# Comando por defecto al iniciar el contenedor
 CMD ["/bin/bash"]
