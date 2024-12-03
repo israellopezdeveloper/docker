@@ -35,6 +35,10 @@ RUN useradd -m -s /bin/bash -u ${USER_ID} -g developer developer
 # Establecer el directorio de trabajo
 WORKDIR /app
 
+RUN wget https://github.com/israellopezdeveloper/nanologger/releases/download/1.0.2/nanologger-1.0.2.deb && \
+  apt install -y ./nanologger-1.0.2.deb && \
+  rm nanologger-1.0.2.deb
+
 # Cambiar al usuario 'developer'
 USER developer
 

@@ -9,6 +9,7 @@ ARG DOCKER_CLANG_VERSION
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
+    wget \
     debian-keyring \
     cmake \
     make \
@@ -40,10 +41,11 @@ RUN apt-get purge --auto-remove -y gcc && \
     lld-${DOCKER_CLANG_VERSION} \
     lldb-${DOCKER_CLANG_VERSION} \
     libclang-common-${DOCKER_CLANG_VERSION}-dev \
+    libc++-${DOCKER_CLANG_VERSION}-dev libc++abi-${DOCKER_CLANG_VERSION}-dev \
     valgrind \
     jq \
     && apt-get clean && \
-    apt-get purge -y wget gnupg debian-keyring llvm-14 && \
+    apt-get purge -y gnupg debian-keyring llvm-14 && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /lib/x86_64-linux-gnu/libasan.*
