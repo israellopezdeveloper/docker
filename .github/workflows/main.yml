@@ -3,7 +3,7 @@ name: CI Main Branch
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   create-images:
