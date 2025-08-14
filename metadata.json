@@ -1,5 +1,5 @@
 {
-  "technologies": ["bash", " docker"],
+  "technologies": ["Bash", "Docker"],
   "lang": {
     "en": {
       "name": "Docker Repository",
